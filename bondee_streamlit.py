@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-import openai
-
-# OpenAI API anahtarını gir
 import os
-openai.api_key = os.getenv("OPENAI_API_KEY")
+from openai import OpenAI
+
+# OpenAI API anahtarını güvenli şekilde al
+client = OpenAI()
 
 # Örnek veri
 data = {
@@ -29,7 +29,7 @@ def generate_gpt_message(message):
         return message
     if message == "Şu an için öneri yok.":
         return message
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "Sen bir banka müşteri danışmanısısın. Kullanıcılara finansal konularda empatik ve cesaretlendirici mesajlar yazıyorsun."},
@@ -55,16 +55,14 @@ Yatırım yapmaya yatırım fonlarıyla başlamak, küçük adımlarla büyük b
 # Yatırıma başlama rehberi
 
 def generate_investment_guide():
-    return """
-Yatırım yapmak göz korkutucu olabilir ama birlikte basit adımlarla ilerleyebiliriz:
-
-1. Hedefini belirle: Ne için yatırım yapmak istiyorsun?
-2. Ufak tutarlarla başla: Deneyim kazanmak önemlidir.
-3. Kendini tanı: Risk seviyeni belirle.
-
-📌 Altın, Yatırım Fonu ve Hisse Senedi gibi ürünlerle başlayabilirsin.
-İşCep üzerinden bu ürünlere kolayca ulaşabilir, Robofon Danışmanı ile sana uygun fonu öğrenebilirsin.
-"""
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Sen halkın anlayacağı dilden anlatan, sade ve güven veren bir ekonomi uzmanısın."},
+            {"role": "user", "content": "Yatırım yapmak isteyen ama hiç tecrübesi olmayan birine, halkın anlayacağı dilde, sade ve yol gösterici bir mesaj yaz. Gereksiz teknik terim kullanma."}
+        ]
+    )
+    return response.choices[0].message.content.strip()
 
 # Streamlit arayüz
 
