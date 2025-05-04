@@ -3,7 +3,8 @@ import pandas as pd
 import openai
 
 # OpenAI API anahtarını gir
-openai.api_key = "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"
+import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Örnek veri
 data = {
